@@ -1,0 +1,34 @@
+#include <iostream>
+#include <math.h>
+#include <Windows.h>
+
+using namespace std;
+
+string input_options[10] = { "Hi", "How are you?", "tu"};
+
+void Identify(string user_answer)
+{
+	setlocale(LC_ALL, "rus");
+	for (int i = 0; i < sizeof(input_options); i++)
+	{
+		if (user_answer == input_options[i] && i>=0 && i <= 10)
+		{
+			cout << "Привет!" << endl;
+		}
+	}
+
+}
+
+
+int main()
+{
+	SetConsoleOutputCP(1251);
+	setlocale(LC_ALL, "rus");
+	string user_responce = " ";
+	while (user_responce != "Stop")
+	{
+		cin >> user_responce;
+		Identify(user_responce);
+	}
+	return 0;
+}
