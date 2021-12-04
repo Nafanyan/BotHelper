@@ -1,34 +1,92 @@
 #include <iostream>
-#include <math.h>
+#include <cmath>
+#include <string>
+#include <fstream>
 #include <Windows.h>
 
 using namespace std;
 
-string input_options[10] = { "Hi", "How are you?", "tu"};
+// База данных фраз
+const int quantity_script = 2;
+const int quantity_action = 6;
+string input_options[quantity_script][quantity_action] = {
+	{"Hi","Helloy", "Watsap,_bro", "Hey", "Ohayo"},
+	{"Kak dela?", "Bro, How are You", "a"}
+};
 
-void Identify(string user_answer)
+// Преднастройки для подготовки сравнения строк без учета регистра (заглавная и маленькая буквы)
+bool icompare_pred(unsigned char a, unsigned char b)
 {
-	setlocale(LC_ALL, "rus");
-	for (int i = 0; i < sizeof(input_options); i++)
+	return std::tolower(a) == std::tolower(b);
+}
+bool icompare(std::string const& a, std::string const& b)
+{
+	if (a.length() == b.length()) {
+		return std::equal(b.begin(), b.end(),
+			a.begin(), icompare_pred);
+	}
+	else {
+		return false;
+	}
+}
+
+// Функция для нахождения номера сценарий по фразе пользователя
+int Identify(string user_answer)
+{
+	for (int i = 0; i < user_answer.size(); i++)
 	{
-		if (user_answer == input_options[i] && i>=0 && i <= 10)
+		user_answer[i] = tolower(user_answer[i]);
+	}
+	int sup = -1;
+	for (int i = 0; i < quantity_script; i++)
+	{
+		for (int j = 0; j < quantity_action; j++)
 		{
-			cout << "Привет!" << endl;
+
+			if ( user_answer.compare(input_options[i][j]) != 0)
+			{
+				sup = i;
+			}
 		}
 	}
+	return sup;
+}
 
+void Greeting()
+{
+	cout << "Охаё, ёмаё, круто" << endl;
+}
+
+// Функция для распределения сценариев по своим функциям
+void Action(int action_number)
+{
+		switch (action_number)
+		{
+		case (0):
+			break;
+		case (1): Greeting();
+			break;
+		case (2):
+			break;
+		default: cout << "Ты быканул или мне показалось?!" << endl;
+			cout << "А ну повтори в более вежливой форме!" << endl;
+			break;
+		}
 }
 
 
+// Главное тело программы
 int main()
 {
+	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
+
 	setlocale(LC_ALL, "rus");
 	string user_responce = " ";
 	while (user_responce != "Stop")
 	{
-		cin >> user_responce;
-		Identify(user_responce);
+		getline(cin, user_responce);
+		Action(Identify(user_responce));
 	}
 	return 0;
 }
