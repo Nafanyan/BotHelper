@@ -1,34 +1,46 @@
+
+#define _CRT_SECURE_NO_WARNINGS //код, позволющий избежать ошибки при переходе между версиями Microsoft Visual Studio 
 #include <iostream>
-#include <cmath>
 #include <string>
-#include <fstream>
 #include <Windows.h>
+#include <ctime>
+#include <cstdio>
+#include <fstream>
 
 using namespace std;
 
 // База данных фраз
-const int quantity_script = 2;
+const int quantity_script = 7;
 const int quantity_action = 6;
 string input_options[quantity_script][quantity_action] = {
-	{"hi","helloy", "watsap, bro", "hey", "ohayo"},
-	{"как дела?", "бро, как ты?",  "аой"}
+	{"0.Тема привествия", "привет","hello", "watsap, bro", "hey", "ohayo"},
+	{"1.Тема общения","как дела?"},
+	{"2.Тема сочинения","сочинение"},
+	{"3.Тема время","время"},
+	{"4.Тема сочинения (дай ещё)","Ветка ответа на сочинение +", "спасибо", "благодарю","хватит", "достаточно"},
+	{"5.Тема сочинения (хватит)","Ветка ответа на сочинение -", "ещё", "другое", "дальше", "следующее"},
+	{"6.Тема сочинение (переход на другую тему)", "другая"}
+	
 };
 
 
-// Функция для нахождения номера сценарий по фразе пользователя
+// Функция первым аргументом принимает запрос пользователя, а вторым ищет похожий запрос в базе данных
+// возвращает номер сценария
 int Identify(string user_answer)
 {
+	// Ввод пользователя понижаем с заглавных до обычных
 	for (int i = 0; i < user_answer.size(); i++)
 	{
 		user_answer[i] = tolower(user_answer[i]);
 	}
-	int sup = -1;
+	
+	int sup = -1; // вспомогательная переменная
 	for (int i = 0; i < quantity_script; i++)
 	{
 		for (int j = 0; j < quantity_action; j++)
 		{
 
-			if ( user_answer.compare(input_options[i][j]) == 0)
+			if ( user_answer == input_options[i][j])
 			{
 				sup = i;
 			}
@@ -39,21 +51,303 @@ int Identify(string user_answer)
 
 void Greeting()
 {
-	cout << "Охаё, ёмаё, круто" << endl;
+	time_t timer;
+	time(&timer);
+	string data = ctime(&timer);
+	if (data[11] == '0' && data[12] - '0' > '4' - '0' && data[12] - '0' <= '10' - '0')
+	{
+		cout << "Доброе утро!" << endl;
+	}
+	if (data[11] == '1' && data[12] == '9' ||
+		data[11] == '2' && data[12] - '0' > '0' - '0' && data[12] - '0' <= '3' - '0')
+	{
+		cout << "Добрый вечер!" << endl;
+	}
+	else
+	{
+		srand(time(0)); // автоматическая рандомизация
+		int data = 0 + rand() % 5;
+		switch (data)
+		{
+		case 0: cout << "Привет, привет!" << endl;
+			break;
+		case 1: cout << "Доброго времени суток!" << endl;
+			break;
+		case 2: cout << "Приветствую!" << endl;
+			break;
+		case 3: cout << "Я тоже рад вас видеть, то есть слышать, то есть здравствуйте!" << endl;
+			break;
+		case 4: cout << "Как раз думал о вас, приветствую!" << endl;
+			break;
+		}
+	}
+
 }
+
+void Time()
+{
+	time_t timer;
+	time(&timer);
+	cout << endl;
+	cout << "Время  " << endl;
+	cout << ctime(&timer) << endl;
+}
+
+void Output(string path)
+{
+	string line;
+
+	std::ifstream in(path); // окрываем файл для чтения
+	if (in.is_open())
+	{
+		while (getline(in, line))
+		{
+			cout << line << endl;
+		}
+	}
+	in.close();     // закрываем файл
+
+}
+
+void DataBook(int book)
+{
+	string line;
+	int rand_book = 0;
+	int num_book = 0;
+	cout << "Имеющиеся произвидения по теме №"  << book << endl;
+	cout << "Выберите номер произвидения" << endl;
+	switch (book)
+	{
+	case 1 :
+		cout << "1. М.А. Шолохов «Тихий Дон»" << endl;
+		cout << "2. А.С. Пушкин «Телега жизни»" << endl;
+		cout << "3. В.А. Каверин «Два капитана»" << endl;
+		cout << "4. М. Горький «Старуха Изергиль»" << endl;
+		cout << "5. И.А. Бунин «Господин из Сан-Франциско»" << endl;
+		cin >> num_book;
+
+		break;
+	case 2: 
+		cout << "1. Е. Замятин «Мы»:" << endl;
+		cout << "2. Л.Н. Толстой «Война и мир»:" << endl;
+		cout << "3. К. Булычев «Приключения Алисы»:" << endl;
+		cout << "4. М. А. Булгаков «Собачье сердце»:" << endl;
+		cout << "5. А. Р. Беляева «Человек-амфибия»:" << endl;
+		cin >> num_book;
+		num_book += 10;
+		break;
+	case 3:
+		cout << "1. А. Н. Островский «Бесприданница»:" << endl;
+		cout << "2. Ф. М. Достоевский «Преступление и наказание»:" << endl;
+		cout << "3. Н. М. Карамзин «Бедная Лиза»:" << endl;
+		cout << "4. М.А. Булгаков «Мастер и Маргарита»:" << endl;
+		cout << "5. Л.Н. Толстой «Война и мир»:" << endl;
+		cin >> num_book;
+		num_book += 20;
+		break;
+	case 4:
+		cout << "1. Н.В. Гоголь «Тарас Бульба»:" << endl;
+		cout << "2. Н.А. Некрасов «Кому на Руси жить хорошо»:" << endl;
+		cout << "3. Ф.М. Достоевский «Преступление и наказание»:" << endl;
+		cout << "4. Н.В. Гоголь «Ревизор»:" << endl;
+		cout << "5. М. Горький «На дне»:" << endl;
+		cin >> num_book;
+		num_book += 30;
+		break;
+	}
+	switch (num_book)
+	{
+	case 1: cout << "Краткое изложение:"<< endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\1MASholohov.txt");
+		break;
+	case 2: cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\2ASPushkin.txt");
+		break;
+	case 3: cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\3VAKaverin.txt");
+		break;
+	case 4: cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\4MGorkyi.txt");
+		break;
+	case 5: cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\5IABnin.txt");
+		break;
+	case 11: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\6Ezamyatin.txt");
+		break;
+	case 12: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\7LNTolstoy.txt");
+		break;
+	case 13: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\8Kbylichev.txt");
+		break;
+	case 14: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\9MABylgakov.txt");
+		break;
+	case 15: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\10ARBelyaeva.txt");
+		break;
+	case 21: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\11ANOstrovski.txt");
+		break;
+	case 22: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\12FMDostoyefski.txt");
+		break;
+	case 23: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\13HMKaramzin.txt");
+		break;
+	case 24: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\14MABulgakov.txt");
+		break;
+	case 25: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\15LNTolstoy.txt");
+		break;
+	case 31: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\16NVGogol.txt");
+		break;
+	case 32: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\17NANekrasov.txt");
+		break;
+	case 33:
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\18FMDostyoefski");
+		break;
+	case 34: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\19NVGogol.txt");
+		break;
+	case 35: 
+		cout << "Краткое изложение:" << endl;
+		Output("C:\\Users\\01112\\source\\repos\\TextHelper\\20MGorkyi.txt");
+		break;
+	}
+}
+
+void HelpEssay(int answer)
+{
+	if (answer == 0) 
+	{ 
+		cout << "Выбери номер своей темы:" << endl;
+		cout << "1. Человек путешествующий : дорога в жизни человека" << endl;
+		cout << "2. Цивилизация и технологии – спасение, вызов или трагедия?" << endl;
+		cout << "3. Преступление и наказание – вечная тема" << endl;
+		cout << "4. Кому на Руси жить хорошо? – вопрос гражданина" << endl;
+		cin >> answer; 
+	}
+	string answer_topic = " ";
+	switch (answer)
+		{
+		case 1: 
+			DataBook(1);
+			cin >> answer_topic;
+			if (Identify(answer_topic) == 5) { HelpEssay(1); }
+			if (Identify(answer_topic) == 6) { HelpEssay(0); }
+			if (Identify(answer_topic) == 4) { cout << "Рад был помочь" << endl; }
+			if (Identify(answer_topic) != 5 && Identify(answer_topic) != 6 && Identify(answer_topic) != 4)
+			{
+				while (Identify(answer_topic) != 5 && Identify(answer_topic) != 6 && Identify(answer_topic) != 4)
+				{
+					cout << "Что, простите?" << endl;
+					cin >> answer_topic;
+				}
+				if (Identify(answer_topic) == 5) { HelpEssay(answer); }
+				if (Identify(answer_topic) == 6) { HelpEssay(0); }
+				if (Identify(answer_topic) == 4) { cout << "Рад был помочь" << endl; }
+			}
+			break;
+		case 2:
+			DataBook(2);
+			cin >> answer_topic;
+			if (Identify(answer_topic) == 5) { HelpEssay(2); }
+			if (Identify(answer_topic) == 6) { HelpEssay(0); }
+			if (Identify(answer_topic) == 4) { cout << "Рад был помочь" << endl; }
+			if (Identify(answer_topic) != 5 && Identify(answer_topic) != 6 && Identify(answer_topic) != 4)
+			{
+				while (Identify(answer_topic) != 5 && Identify(answer_topic) != 6 && Identify(answer_topic) != 4)
+				{
+					cout << "Что, простите?" << endl;
+					cin >> answer_topic;
+				}
+				if (Identify(answer_topic) == 5) { HelpEssay(answer); }
+				if (Identify(answer_topic) == 6) { HelpEssay(0); }
+				if (Identify(answer_topic) == 4) { cout << "Рад был помочь" << endl; }
+			}
+			break;
+		case 3:
+			DataBook(3);
+			cin >> answer_topic;
+			if (Identify(answer_topic) == 5) { HelpEssay(3); }
+			if (Identify(answer_topic) == 6) { HelpEssay(0); }
+			if (Identify(answer_topic) == 4) { cout << "Рад был помочь" << endl; }
+			if (Identify(answer_topic) != 5 && Identify(answer_topic) != 6 && Identify(answer_topic) != 4)
+			{
+				while (Identify(answer_topic) != 5 && Identify(answer_topic) != 6 && Identify(answer_topic) != 4)
+				{
+					cout << "Что, простите?" << endl;
+					cin >> answer_topic;
+				}
+				if (Identify(answer_topic) == 5) { HelpEssay(answer); }
+				if (Identify(answer_topic) == 6) { HelpEssay(0); }
+				if (Identify(answer_topic) == 4) { cout << "Рад был помочь" << endl; }
+			}
+			break;
+		case 4:
+			DataBook(4);
+			cin >> answer_topic;
+			if (Identify(answer_topic) == 5) { HelpEssay(4); }
+			if (Identify(answer_topic) == 6) { HelpEssay(0); }
+			if (Identify(answer_topic) == 4) { cout << "Рад был помочь" << endl; }
+			if (Identify(answer_topic) != 5 && Identify(answer_topic) != 6 && Identify(answer_topic) != 4)
+			{
+				while (Identify(answer_topic) != 5 && Identify(answer_topic) != 6 && Identify(answer_topic) != 4)
+				{
+					cout << "Что, простите?" << endl;
+					cin >> answer_topic;
+				}
+				if (Identify(answer_topic) == 5) { HelpEssay(answer); }
+				if (Identify(answer_topic) == 6) { HelpEssay(0); }
+				if (Identify(answer_topic) == 4) { cout << "Рад был помочь" << endl; }
+			}
+			break;
+		default:
+			cout << "Номера такой темы нет. \n Введи снова:" << endl;
+			cin >> answer;
+			HelpEssay(answer);
+			break;
+	}
+}
+
+
+
+
 
 // Функция для распределения сценариев по своим функциям
 void Action(int action_number)
 {
 		switch (action_number)
 		{
-		case (0):
+		case 0: Greeting();
 			break;
-		case (1): Greeting();
+		case 1: 
 			break;
-		case (2):
+		case 2: 
+			HelpEssay(0);
+			break; 
+		case 3: Time();
 			break;
-		default: cout << "Ты быканул или мне показалось?!" << endl;
+		case -1: cout << "Ты быканул или мне показалось?!" << endl;
 			cout << "А ну повтори в более вежливой форме!" << endl;
 			break;
 		}
@@ -65,10 +359,10 @@ int main()
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-
 	setlocale(LC_ALL, "rus");
+
 	string user_responce = " ";
-	while (user_responce != "Stop")
+	while (user_responce != "Пока")
 	{
 		getline(cin, user_responce);
 		Action(Identify(user_responce));
